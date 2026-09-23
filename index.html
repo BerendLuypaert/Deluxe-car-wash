@@ -77,14 +77,12 @@
       .brand {
         display: flex;
         align-items: center;
-        width: clamp(116px, 13vw, 156px);
+        width: auto;
         font-weight: 900;
         letter-spacing: 0;
-      }
-
-      .brand-logo {
-        width: 100%;
-        height: auto;
+        font-size: 0.92rem;
+        line-height: 1.05;
+        text-transform: uppercase;
       }
 
       .navlinks {
@@ -504,7 +502,8 @@
         }
 
         .brand {
-          width: 118px;
+          max-width: 148px;
+          font-size: 0.78rem;
         }
 
         .phone-pill {
@@ -558,7 +557,7 @@
     <header class="topbar">
       <nav class="nav" aria-label="Hoofdnavigatie">
         <a class="brand" href="#top" aria-label="Delux Hand Car Wash home">
-          <img class="brand-logo" src="assets/delux-logo.png" alt="Delux Hand Car Wash" />
+          Delux Hand Car Wash
         </a>
         <div class="navlinks" aria-label="Pagina onderdelen">
           <a href="#diensten">Diensten</a>
