@@ -87,6 +87,18 @@
         display: block;
       }
 
+      .intro-car-stage {
+        position: absolute;
+        left: 0;
+        top: 52%;
+        z-index: 1;
+        width: clamp(310px, 52vw, 820px);
+        height: clamp(170px, 25vw, 360px);
+        pointer-events: none;
+        transform: translate3d(-120%, -50%, 0);
+        will-change: transform;
+      }
+
       .intro-canvas {
         position: absolute;
         inset: 0;
@@ -97,9 +109,9 @@
       .intro-shadow {
         position: absolute;
         left: 50%;
-        bottom: clamp(22%, 24vh, 30%);
-        width: min(42vw, 520px);
-        height: 24px;
+        bottom: 7%;
+        width: 74%;
+        height: clamp(16px, 2.2vw, 26px);
         border-radius: 999px;
         background: rgba(7, 17, 31, 0.12);
         filter: blur(12px);
@@ -111,6 +123,7 @@
         position: absolute;
         left: 50%;
         top: 50%;
+        z-index: 0;
         color: rgba(7, 17, 31, 0.05);
         font-size: clamp(4.5rem, 17vw, 14rem);
         font-style: italic;
@@ -896,8 +909,10 @@
   <body>
     <div class="intro-overlay" aria-hidden="true">
       <div class="intro-word">Delux</div>
-      <canvas class="intro-canvas"></canvas>
-      <div class="intro-shadow"></div>
+      <div class="intro-car-stage">
+        <canvas class="intro-canvas"></canvas>
+        <div class="intro-shadow"></div>
+      </div>
     </div>
     <header class="topbar">
       <nav class="nav" aria-label="Hoofdnavigatie">
@@ -1153,10 +1168,11 @@
 
       const root = document.documentElement;
       const overlay = document.querySelector(".intro-overlay");
+      const stage = document.querySelector(".intro-car-stage");
       const canvas = document.querySelector(".intro-canvas");
       const shadow = document.querySelector(".intro-shadow");
       const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      const shouldPlay = root.classList.contains("intro-active") && !prefersReduced && overlay && canvas;
+      const shouldPlay = root.classList.contains("intro-active") && !prefersReduced && overlay && stage && canvas;
 
       const finishIntro = () => {
         window.clearTimeout(window.deluxIntroFailsafe);
@@ -1199,22 +1215,33 @@
         let frameId = 0;
         let carReady = false;
         let introDone = false;
-        let worldWidth = 10;
-        let worldHeight = 6;
+        let worldWidth = 6;
+        let worldHeight = 3;
+
+        const getStageTravel = () => {
+          const stageWidth = stage.getBoundingClientRect().width || window.innerWidth * 0.52;
+          return {
+            start: -stageWidth - 96,
+            end: window.innerWidth + 96
+          };
+        };
 
         const resize = () => {
-          const width = window.innerWidth;
-          const height = window.innerHeight;
+          const rect = stage.getBoundingClientRect();
+          const width = Math.max(1, rect.width);
+          const height = Math.max(1, rect.height);
           renderer.setSize(width, height, false);
-          worldHeight = width < 720 ? 7.2 : 6;
+          worldHeight = window.innerWidth < 720 ? 3.4 : 3;
           worldWidth = worldHeight * (width / height);
           camera.left = -worldWidth / 2;
           camera.right = worldWidth / 2;
           camera.top = worldHeight / 2;
           camera.bottom = -worldHeight / 2;
           camera.updateProjectionMatrix();
-          group.position.y = width < 720 ? -0.55 : -0.4;
-          if (!carReady) group.position.x = -worldWidth;
+          group.position.set(0, window.innerWidth < 720 ? -0.16 : -0.12, 0);
+          if (!carReady) {
+            gsap.set(stage, { x: getStageTravel().start, yPercent: -50 });
+          }
         };
 
         const render = () => {
@@ -1238,15 +1265,24 @@
           });
         };
 
-        const runFallback = () => {
-          gsap.set(group.position, { x: -worldWidth });
-          gsap.to(shadow, { opacity: 1, duration: 0.25 });
-          gsap.to(group.position, {
-            x: worldWidth,
-            duration: 2,
-            ease: "power2.inOut",
-            onComplete: closeOverlay
+        const driveStageAcross = () => {
+          const travel = getStageTravel();
+          gsap.set(stage, { x: travel.start, yPercent: -50 });
+          gsap.set(shadow, { opacity: 0 });
+          gsap.delayedCall(0.2, () => {
+            gsap.to(shadow, { opacity: 1, duration: 0.24, ease: "power2.out" });
+            gsap.to(stage, {
+              x: travel.end,
+              yPercent: -50,
+              duration: 2,
+              ease: "power2.inOut",
+              onComplete: closeOverlay
+            });
           });
+        };
+
+        const runFallback = () => {
+          driveStageAcross();
         };
 
         resize();
@@ -1266,33 +1302,23 @@
             const center = box.getCenter(new THREE.Vector3());
             model.position.sub(center);
 
-            const targetWidth = window.innerWidth < 720 ? worldWidth * 0.72 : worldWidth * 0.42;
+            const targetWidth = window.innerWidth < 720 ? worldWidth * 0.84 : worldWidth * 0.88;
             const scale = targetWidth / Math.max(size.x, size.z, 0.001);
             model.scale.setScalar(scale);
             model.rotation.set(0.03, Math.PI / 2, 0);
             model.updateMatrixWorld(true);
 
             carReady = true;
-            const carBounds = new THREE.Box3().setFromObject(model);
-            const carWidth = carBounds.getSize(new THREE.Vector3()).x;
-            const travelPadding = worldWidth * 0.18;
-            const startX = -worldWidth / 2 - carWidth / 2 - travelPadding;
-            const endX = worldWidth / 2 + carWidth / 2 + travelPadding;
-            gsap.set(group.position, { x: startX, y: group.position.y });
+            gsap.set(group.position, { x: 0, y: group.position.y });
             gsap.set(group.rotation, { y: 0 });
-            gsap.to(shadow, { opacity: 1, duration: 0.25 });
+            driveStageAcross();
             gsap.to(group.rotation, {
               y: 0.05,
               duration: 0.55,
               yoyo: true,
               repeat: 3,
-              ease: "sine.inOut"
-            });
-            gsap.to(group.position, {
-              x: endX,
-              duration: 2,
-              ease: "power2.inOut",
-              onComplete: closeOverlay
+              ease: "sine.inOut",
+              delay: 0.2
             });
           },
           undefined,
