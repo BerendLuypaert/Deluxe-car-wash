@@ -13,6 +13,9 @@
       type="image/png"
       href="assets/delux-logo.png"
     />
+    <script>
+      document.documentElement.classList.add("js");
+    </script>
     <style>
       :root {
         color-scheme: light;
@@ -113,6 +116,12 @@
         padding: 0 16px;
         background: var(--teal);
         color: var(--white);
+        transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease;
+      }
+
+      .phone-pill:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 28px rgba(237, 28, 36, 0.24);
       }
 
       .hero {
@@ -142,6 +151,7 @@
         line-height: 0.8;
         white-space: nowrap;
         pointer-events: none;
+        animation: washWord 900ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
       }
 
       .hero-inner {
@@ -185,11 +195,13 @@
       h1 .red {
         color: var(--teal);
         display: block;
+        animation: slideInLeft 780ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
       }
 
       h1 .dark-word {
         color: var(--ink);
         display: block;
+        animation: slideInLeft 780ms 120ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
       }
 
       .hero-copy {
@@ -197,6 +209,7 @@
         margin: 0;
         font-size: clamp(1.1rem, 2vw, 1.35rem);
         color: var(--muted);
+        animation: fadeUp 680ms 240ms ease both;
       }
 
       .hero-media {
@@ -207,12 +220,24 @@
         overflow: hidden;
         box-shadow: var(--shadow);
         background: #ddd;
+        animation: heroImageIn 820ms 180ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+        transition: transform 320ms ease, box-shadow 320ms ease;
+      }
+
+      .hero-media:hover {
+        transform: translateY(-6px) rotate(-0.4deg);
+        box-shadow: 0 30px 70px rgba(7, 17, 31, 0.18);
       }
 
       .hero-media img {
         width: 100%;
         height: 100%;
         object-fit: cover;
+        transition: transform 700ms ease;
+      }
+
+      .hero-media:hover img {
+        transform: scale(1.045);
       }
 
       .hero-badge {
@@ -244,11 +269,18 @@
         flex-wrap: wrap;
         gap: 12px;
         margin-top: 34px;
+        animation: fadeUp 680ms 330ms ease both;
       }
 
       .button {
         padding: 0 20px;
         border: 1px solid transparent;
+        transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease, border-color 180ms ease;
+      }
+
+      .button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 14px 32px rgba(7, 17, 31, 0.14);
       }
 
       .button.primary {
@@ -269,11 +301,18 @@
         border: 1px solid rgba(7, 17, 31, 0.08);
         background: var(--white);
         box-shadow: 0 16px 44px rgba(7, 17, 31, 0.08);
+        animation: fadeUp 720ms 420ms ease both;
       }
 
       .hero-stat {
         padding: 18px;
         border-right: 1px solid rgba(7, 17, 31, 0.08);
+        transition: background 180ms ease, transform 180ms ease;
+      }
+
+      .hero-stat:hover {
+        background: #fff1ed;
+        transform: translateY(-2px);
       }
 
       .hero-stat:last-child {
@@ -339,6 +378,15 @@
         border: 1px solid var(--line);
         border-radius: 8px;
         background: var(--soft);
+        transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
+      }
+
+      .feature:hover,
+      .service:hover,
+      .price-card:hover {
+        transform: translateY(-6px);
+        border-color: rgba(237, 28, 36, 0.28);
+        box-shadow: 0 20px 46px rgba(7, 17, 31, 0.1);
       }
 
       .feature svg,
@@ -380,6 +428,13 @@
         border-radius: 8px;
         box-shadow: var(--shadow);
         background: #cfd8df;
+        transition: transform 300ms ease, box-shadow 300ms ease;
+      }
+
+      .image-large:hover,
+      .image-small:hover {
+        transform: translateY(-5px) rotate(0.3deg);
+        box-shadow: 0 28px 64px rgba(7, 17, 31, 0.16);
       }
 
       .image-large {
@@ -399,6 +454,12 @@
         width: 100%;
         height: 100%;
         object-fit: cover;
+        transition: transform 700ms ease;
+      }
+
+      .image-large:hover img,
+      .image-small:hover img {
+        transform: scale(1.05);
       }
 
       .services {
@@ -420,6 +481,7 @@
         border-radius: 8px;
         background: var(--white);
         box-shadow: 0 12px 32px rgba(7, 17, 31, 0.06);
+        transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
       }
 
       .price-card strong {
@@ -448,6 +510,7 @@
         border-radius: 8px;
         background: var(--white);
         box-shadow: 0 12px 32px rgba(7, 17, 31, 0.06);
+        transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
       }
 
       .note {
@@ -500,6 +563,13 @@
         border-radius: 8px;
         background: rgba(255, 255, 255, 0.08);
         border: 1px solid rgba(255, 255, 255, 0.14);
+        transition: transform 220ms ease, border-color 220ms ease, background 220ms ease;
+      }
+
+      .contact-panel:hover {
+        transform: translateY(-4px);
+        border-color: rgba(255, 255, 255, 0.28);
+        background: rgba(255, 255, 255, 0.11);
       }
 
       .contact-panel h2 {
@@ -550,6 +620,78 @@
       .stock-note {
         margin-top: 12px;
         font-size: 0.88rem;
+      }
+
+      .js .reveal {
+        opacity: 0;
+        transform: translateY(26px);
+        transition: opacity 620ms ease, transform 620ms cubic-bezier(0.2, 0.8, 0.2, 1);
+        transition-delay: var(--delay, 0ms);
+      }
+
+      .js .reveal.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(24px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes slideInLeft {
+        from {
+          opacity: 0;
+          transform: translateX(-42px) skewX(-5deg);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0) skewX(0);
+        }
+      }
+
+      @keyframes heroImageIn {
+        from {
+          opacity: 0;
+          transform: translateX(36px) rotate(1.2deg) scale(0.98);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0) rotate(0) scale(1);
+        }
+      }
+
+      @keyframes washWord {
+        from {
+          opacity: 0;
+          transform: translateX(-38px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 1ms !important;
+          animation-iteration-count: 1 !important;
+          scroll-behavior: auto !important;
+          transition-duration: 1ms !important;
+        }
+
+        .js .reveal {
+          opacity: 1;
+          transform: none;
+        }
       }
 
       @media (max-width: 920px) {
@@ -866,5 +1008,33 @@
         </div>
       </div>
     </footer>
+    <script>
+      const revealItems = document.querySelectorAll(
+        ".section-head, .feature, .image-stack, .services, .price-card, .service, .note, .hours, .contact-panel, .footer-grid"
+      );
+
+      revealItems.forEach((item, index) => {
+        item.classList.add("reveal");
+        item.style.setProperty("--delay", `${Math.min(index % 6, 5) * 70}ms`);
+      });
+
+      if ("IntersectionObserver" in window) {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("is-visible");
+                observer.unobserve(entry.target);
+              }
+            });
+          },
+          { threshold: 0.16, rootMargin: "0px 0px -40px 0px" }
+        );
+
+        revealItems.forEach((item) => observer.observe(item));
+      } else {
+        revealItems.forEach((item) => item.classList.add("is-visible"));
+      }
+    </script>
   </body>
 </html>
