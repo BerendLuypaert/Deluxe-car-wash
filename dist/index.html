@@ -106,19 +106,6 @@
         height: 100%;
       }
 
-      .intro-shadow {
-        position: absolute;
-        left: 50%;
-        bottom: 7%;
-        width: 74%;
-        height: clamp(16px, 2.2vw, 26px);
-        border-radius: 999px;
-        background: rgba(7, 17, 31, 0.12);
-        filter: blur(12px);
-        opacity: 0;
-        transform: translateX(-50%);
-      }
-
       .intro-word {
         position: absolute;
         left: 50%;
@@ -911,7 +898,6 @@
       <div class="intro-word">Delux</div>
       <div class="intro-car-stage">
         <canvas class="intro-canvas"></canvas>
-        <div class="intro-shadow"></div>
       </div>
     </div>
     <header class="topbar">
@@ -1170,7 +1156,6 @@
       const overlay = document.querySelector(".intro-overlay");
       const stage = document.querySelector(".intro-car-stage");
       const canvas = document.querySelector(".intro-canvas");
-      const shadow = document.querySelector(".intro-shadow");
       const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       const shouldPlay = root.classList.contains("intro-active") && !prefersReduced && overlay && stage && canvas;
 
@@ -1268,14 +1253,12 @@
         const driveStageAcross = () => {
           const travel = getStageTravel();
           gsap.set(stage, { x: travel.start, yPercent: -50 });
-          gsap.set(shadow, { opacity: 0 });
-          gsap.delayedCall(0.2, () => {
-            gsap.to(shadow, { opacity: 1, duration: 0.24, ease: "power2.out" });
+          gsap.delayedCall(0.05, () => {
             gsap.to(stage, {
               x: travel.end,
               yPercent: -50,
-              duration: 2,
-              ease: "power2.inOut",
+              duration: 1.8,
+              ease: "power3.out",
               onComplete: closeOverlay
             });
           });
