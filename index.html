@@ -599,36 +599,166 @@
       }
 
       .dark .lead,
-      .dark .hours small,
+      .dark .hours-note,
       .dark .contact-detail,
       .dark .stock-note {
         color: rgba(255, 255, 255, 0.72);
       }
 
-      .hours-contact {
+      .hours-section {
+        padding-bottom: 50px;
+      }
+
+      .hours-shell {
         display: grid;
-        grid-template-columns: 1fr 0.88fr;
-        gap: 48px;
+        grid-template-columns: minmax(0, 0.72fr) minmax(320px, 1fr);
+        gap: 38px;
+        align-items: start;
+      }
+
+      .hours-status {
+        position: sticky;
+        top: 96px;
+        padding: 28px;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 8px;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.05));
+        overflow: hidden;
+      }
+
+      .hours-status::after {
+        position: absolute;
+        right: -42px;
+        bottom: -70px;
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+        background: rgba(230, 51, 31, 0.28);
+        filter: blur(8px);
+        content: "";
+      }
+
+      .status-label {
+        display: inline-flex;
+        gap: 8px;
+        align-items: center;
+        padding: 7px 10px;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.08);
+        font-size: 0.78rem;
+        font-weight: 900;
+        text-transform: uppercase;
+      }
+
+      .status-dot {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: var(--teal);
+        box-shadow: 0 0 0 7px rgba(39, 213, 199, 0.12);
+      }
+
+      .status-dot.is-closed {
+        background: #ff9e9e;
+        box-shadow: 0 0 0 7px rgba(255, 158, 158, 0.12);
+      }
+
+      .status-time {
+        position: relative;
+        z-index: 1;
+        display: block;
+        margin-top: 18px;
+        font-size: clamp(2.1rem, 5vw, 4.2rem);
+        font-weight: 1000;
+        line-height: 0.95;
+      }
+
+      .hours-note {
+        position: relative;
+        z-index: 1;
+        margin-top: 14px;
       }
 
       .hours {
-        border-top: 1px solid rgba(255, 255, 255, 0.16);
+        display: grid;
+        gap: 10px;
       }
 
       .hour-row {
         display: grid;
-        grid-template-columns: 1fr auto;
+        grid-template-columns: 1fr auto auto;
         gap: 18px;
-        padding: 15px 0;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+        align-items: center;
+        width: 100%;
+        padding: 17px 18px;
+        border: 1px solid rgba(255, 255, 255, 0.13);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.06);
+        color: inherit;
+        font: inherit;
+        text-align: left;
+        cursor: pointer;
+        transition: transform 220ms ease, border-color 220ms ease, background 220ms ease;
       }
 
-      .hour-row span:first-child {
+      .hour-row:hover,
+      .hour-row:focus-visible,
+      .hour-row.is-active {
+        transform: translateX(8px);
+        border-color: rgba(230, 51, 31, 0.58);
+        background: rgba(255, 255, 255, 0.1);
+        outline: none;
+      }
+
+      .hour-row span:first-child,
+      .hour-hint {
         color: rgba(255, 255, 255, 0.78);
+      }
+
+      .hour-row strong {
+        white-space: nowrap;
+      }
+
+      .hour-badge {
+        min-width: 74px;
+        padding: 4px 8px;
+        border-radius: 999px;
+        background: transparent;
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 0.72rem;
+        font-weight: 900;
+        opacity: 0;
+        text-align: center;
+        text-transform: uppercase;
+      }
+
+      .hour-row.is-today .hour-badge {
+        background: var(--red);
+        color: var(--white);
+        opacity: 1;
+      }
+
+      .hour-detail {
+        grid-column: 1 / -1;
+        max-height: 0;
+        overflow: hidden;
+        color: rgba(255, 255, 255, 0.68);
+        font-size: 0.94rem;
+        transition: max-height 240ms ease, margin-top 240ms ease;
+      }
+
+      .hour-row.is-active .hour-detail {
+        max-height: 56px;
+        margin-top: -4px;
       }
 
       .closed {
         color: #ff9e9e;
+      }
+
+      .contact-section {
+        padding-top: 0;
       }
 
       .contact-panel {
@@ -649,8 +779,25 @@
         font-size: clamp(1.8rem, 3vw, 2.6rem);
       }
 
+      .contact-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+        margin-top: 22px;
+      }
+
       .contact-line {
-        margin-top: 18px;
+        padding: 18px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.05);
+        transition: transform 220ms ease, border-color 220ms ease, background 220ms ease;
+      }
+
+      .contact-line:hover {
+        transform: translateY(-3px);
+        border-color: rgba(39, 213, 199, 0.42);
+        background: rgba(255, 255, 255, 0.08);
       }
 
       .contact-line strong {
@@ -804,9 +951,15 @@
         .feature-grid,
         .price-grid,
         .services,
-        .hours-contact,
+        .hours-shell,
+        .contact-grid,
         .footer-grid {
           grid-template-columns: 1fr;
+        }
+
+        .hours-status {
+          position: relative;
+          top: auto;
         }
 
         .hero-stat {
@@ -877,13 +1030,19 @@
 
         .feature,
         .service,
+        .hours-status,
         .contact-panel {
           padding: 22px;
         }
 
         .hour-row {
-          grid-template-columns: 1fr;
-          gap: 4px;
+          grid-template-columns: 1fr auto;
+          gap: 7px 12px;
+        }
+
+        .hour-badge {
+          grid-column: 1 / -1;
+          width: max-content;
         }
 
         .image-small {
@@ -1046,34 +1205,48 @@
         </div>
       </section>
 
-      <section id="uren" class="dark" aria-labelledby="uren-title">
-        <div class="wrap hours-contact">
-          <div>
+      <section id="uren" class="dark hours-section" aria-labelledby="uren-title">
+        <div class="wrap">
+          <div class="hours-shell">
+            <div class="hours-status reveal">
+              <span class="status-label"><span class="status-dot" aria-hidden="true"></span><span data-hours-state>Vandaag</span></span>
+              <strong class="status-time" data-hours-time>08:00 - 18:00</strong>
+              <p class="hours-note" data-hours-note>Klik op een dag om de uren te bekijken.</p>
+            </div>
+            <div>
             <span class="kicker">Openingsuren</span>
             <h2 id="uren-title">Kom langs tijdens de huidige vermelde uren.</h2>
             <p class="lead">
               Deze uren zijn gebaseerd op publieke bedrijfsgegevens. Voor publicatie best nog een laatste keer laten bevestigen door de eigenaar.
             </p>
-            <div class="hours" style="margin-top: 28px">
-              <div class="hour-row"><span>Maandag</span><strong>08:00 - 18:00</strong></div>
-              <div class="hour-row"><span>Dinsdag</span><strong class="closed">Gesloten</strong></div>
-              <div class="hour-row"><span>Woensdag</span><strong>08:00 - 18:00</strong></div>
-              <div class="hour-row"><span>Donderdag</span><strong>08:00 - 18:00</strong></div>
-              <div class="hour-row"><span>Vrijdag</span><strong>08:00 - 18:00</strong></div>
-              <div class="hour-row"><span>Zaterdag</span><strong>08:00 - 18:00</strong></div>
-              <div class="hour-row"><span>Zondag</span><strong>09:00 - 17:00</strong></div>
+            <div class="hours" style="margin-top: 28px" aria-label="Openingsuren per dag">
+              <button class="hour-row" type="button" data-day="1" data-hours="08:00 - 18:00" data-note="Normale openingsdag voor handwas, interieur en exterieur."><span>Maandag</span><strong>08:00 - 18:00</strong><span class="hour-badge">Vandaag</span><span class="hour-detail">Normale openingsdag voor handwas, interieur en exterieur.</span></button>
+              <button class="hour-row" type="button" data-day="2" data-hours="Gesloten" data-note="Dinsdag is volgens de huidige gegevens de vaste sluitingsdag."><span>Dinsdag</span><strong class="closed">Gesloten</strong><span class="hour-badge">Vandaag</span><span class="hour-detail">Dinsdag is volgens de huidige gegevens de vaste sluitingsdag.</span></button>
+              <button class="hour-row" type="button" data-day="3" data-hours="08:00 - 18:00" data-note="Open vanaf de ochtend tot 18:00."><span>Woensdag</span><strong>08:00 - 18:00</strong><span class="hour-badge">Vandaag</span><span class="hour-detail">Open vanaf de ochtend tot 18:00.</span></button>
+              <button class="hour-row" type="button" data-day="4" data-hours="08:00 - 18:00" data-note="Open voor binnen- en buitenreiniging."><span>Donderdag</span><strong>08:00 - 18:00</strong><span class="hour-badge">Vandaag</span><span class="hour-detail">Open voor binnen- en buitenreiniging.</span></button>
+              <button class="hour-row" type="button" data-day="5" data-hours="08:00 - 18:00" data-note="Handig voor een wasbeurt voor het weekend."><span>Vrijdag</span><strong>08:00 - 18:00</strong><span class="hour-badge">Vandaag</span><span class="hour-detail">Handig voor een wasbeurt voor het weekend.</span></button>
+              <button class="hour-row" type="button" data-day="6" data-hours="08:00 - 18:00" data-note="Zaterdag geopend tijdens de normale daguren."><span>Zaterdag</span><strong>08:00 - 18:00</strong><span class="hour-badge">Vandaag</span><span class="hour-detail">Zaterdag geopend tijdens de normale daguren.</span></button>
+              <button class="hour-row" type="button" data-day="0" data-hours="09:00 - 17:00" data-note="Zondag geopend met iets kortere uren."><span>Zondag</span><strong>09:00 - 17:00</strong><span class="hour-badge">Vandaag</span><span class="hour-detail">Zondag geopend met iets kortere uren.</span></button>
+            </div>
             </div>
           </div>
-          <aside id="contact" class="contact-panel" aria-labelledby="contact-title">
+        </div>
+      </section>
+
+      <section id="contact" class="dark contact-section" aria-labelledby="contact-title">
+        <div class="wrap">
+          <aside class="contact-panel" aria-labelledby="contact-title">
             <span class="kicker">Contact</span>
             <h2 id="contact-title">Snel bereikbaar aan de Tiensesteenweg.</h2>
-            <div class="contact-line">
-              <strong>Adres</strong>
-              <div class="contact-detail">Tiensesteenweg 344<br />3800 Sint-Truiden</div>
-            </div>
-            <div class="contact-line">
-              <strong>Telefoon</strong>
-              <div class="contact-detail">0465 89 12 62</div>
+            <div class="contact-grid">
+              <div class="contact-line">
+                <strong>Adres</strong>
+                <div class="contact-detail">Tiensesteenweg 344<br />3800 Sint-Truiden</div>
+              </div>
+              <div class="contact-line">
+                <strong>Telefoon</strong>
+                <div class="contact-detail">0465 89 12 62</div>
+              </div>
             </div>
             <div class="contact-actions">
               <a class="button primary" href="tel:+32465891262">Bel nu</a>
@@ -1100,8 +1273,38 @@
     </footer>
     <script>
       const revealItems = document.querySelectorAll(
-        ".section-head, .feature, .image-stack, .services, .price-card, .service, .note, .hours, .contact-panel, .footer-grid"
+        ".section-head, .feature, .image-stack, .services, .price-card, .service, .note, .hours-status, .hours, .hour-row, .contact-panel, .contact-line, .footer-grid"
       );
+
+      const hourRows = document.querySelectorAll(".hour-row");
+      const statusText = document.querySelector("[data-hours-state]");
+      const statusTime = document.querySelector("[data-hours-time]");
+      const statusNote = document.querySelector("[data-hours-note]");
+      const statusDot = document.querySelector(".status-dot");
+      const today = new Date().getDay();
+
+      const setActiveHour = (row) => {
+        hourRows.forEach((item) => {
+          item.classList.toggle("is-active", item === row);
+          item.setAttribute("aria-expanded", item === row ? "true" : "false");
+        });
+
+        const hours = row.dataset.hours;
+        const isClosed = hours.toLowerCase().includes("gesloten");
+        statusText.textContent = row.classList.contains("is-today") ? (isClosed ? "Vandaag gesloten" : "Vandaag open") : row.querySelector("span").textContent;
+        statusTime.textContent = hours;
+        statusNote.textContent = row.dataset.note;
+        statusDot.classList.toggle("is-closed", isClosed);
+      };
+
+      hourRows.forEach((row) => {
+        const isToday = Number(row.dataset.day) === today;
+        row.classList.toggle("is-today", isToday);
+        row.setAttribute("aria-expanded", "false");
+        row.addEventListener("click", () => setActiveHour(row));
+      });
+
+      setActiveHour(document.querySelector(".hour-row.is-today") || hourRows[0]);
 
       revealItems.forEach((item, index) => {
         item.classList.add("reveal");
