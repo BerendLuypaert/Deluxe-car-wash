@@ -15,6 +15,13 @@
     />
     <script>
       document.documentElement.classList.add("js");
+      try {
+        const alreadyPlayed = sessionStorage.getItem("deluxIntroPlayed") === "1";
+        const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        document.documentElement.classList.add(alreadyPlayed || reducedMotion ? "intro-skip" : "intro-active");
+      } catch {
+        document.documentElement.classList.add("intro-active");
+      }
     </script>
     <style>
       :root {
@@ -45,8 +52,74 @@
         font-family:
           Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         color: var(--ink);
-        background: var(--paper);
+        background: #f5f5f2;
         line-height: 1.55;
+      }
+
+      .intro-active body {
+        overflow: hidden;
+      }
+
+      .intro-active .topbar,
+      .intro-active main,
+      .intro-active footer {
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .topbar,
+      main,
+      footer {
+        transition: opacity 520ms ease;
+      }
+
+      .intro-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        display: none;
+        overflow: hidden;
+        background: #f5f5f2;
+        pointer-events: auto;
+      }
+
+      .intro-active .intro-overlay {
+        display: block;
+      }
+
+      .intro-canvas {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+      }
+
+      .intro-shadow {
+        position: absolute;
+        left: 50%;
+        bottom: clamp(22%, 24vh, 30%);
+        width: min(42vw, 520px);
+        height: 24px;
+        border-radius: 999px;
+        background: rgba(7, 17, 31, 0.12);
+        filter: blur(12px);
+        opacity: 0;
+        transform: translateX(-50%);
+      }
+
+      .intro-word {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        color: rgba(7, 17, 31, 0.05);
+        font-size: clamp(4.5rem, 17vw, 14rem);
+        font-style: italic;
+        font-weight: 1000;
+        line-height: 0.8;
+        text-transform: uppercase;
+        transform: translate(-50%, -50%);
+        white-space: nowrap;
+        pointer-events: none;
       }
 
       a {
@@ -692,6 +765,17 @@
           opacity: 1;
           transform: none;
         }
+
+        .intro-overlay {
+          display: none !important;
+        }
+
+        .intro-active .topbar,
+        .intro-active main,
+        .intro-active footer {
+          opacity: 1;
+          pointer-events: auto;
+        }
       }
 
       @media (max-width: 920px) {
@@ -810,6 +894,11 @@
     </style>
   </head>
   <body>
+    <div class="intro-overlay" aria-hidden="true">
+      <div class="intro-word">Delux</div>
+      <canvas class="intro-canvas"></canvas>
+      <div class="intro-shadow"></div>
+    </div>
     <header class="topbar">
       <nav class="nav" aria-label="Hoofdnavigatie">
         <a class="brand" href="#top" aria-label="Delux Hand Car Wash home">
@@ -1034,6 +1123,181 @@
         revealItems.forEach((item) => observer.observe(item));
       } else {
         revealItems.forEach((item) => item.classList.add("is-visible"));
+      }
+    </script>
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+          "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+        }
+      }
+    </script>
+    <script>
+      window.deluxIntroFailsafe = window.setTimeout(() => {
+        if (document.documentElement.classList.contains("intro-active")) {
+          try {
+            sessionStorage.setItem("deluxIntroPlayed", "1");
+          } catch {}
+          document.querySelector(".intro-overlay")?.remove();
+          document.documentElement.classList.remove("intro-active");
+          document.documentElement.classList.add("intro-skip");
+          document.body.style.overflow = "";
+        }
+      }, 9000);
+    </script>
+    <script type="module">
+      import * as THREE from "three";
+      import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+      import { gsap } from "https://cdn.jsdelivr.net/npm/gsap@3.12.5/+esm";
+
+      const root = document.documentElement;
+      const overlay = document.querySelector(".intro-overlay");
+      const canvas = document.querySelector(".intro-canvas");
+      const shadow = document.querySelector(".intro-shadow");
+      const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const shouldPlay = root.classList.contains("intro-active") && !prefersReduced && overlay && canvas;
+
+      const finishIntro = () => {
+        window.clearTimeout(window.deluxIntroFailsafe);
+        try {
+          sessionStorage.setItem("deluxIntroPlayed", "1");
+        } catch {}
+        root.classList.remove("intro-active");
+        root.classList.add("intro-skip");
+        document.body.style.overflow = "";
+      };
+
+      if (shouldPlay) {
+        document.body.style.overflow = "hidden";
+
+        const scene = new THREE.Scene();
+        const renderer = new THREE.WebGLRenderer({
+          canvas,
+          alpha: true,
+          antialias: true,
+          powerPreference: "high-performance"
+        });
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.7));
+        renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+        const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 100);
+        camera.position.set(0, 2.25, 8);
+        camera.lookAt(0, 0.35, 0);
+
+        const group = new THREE.Group();
+        scene.add(group);
+
+        scene.add(new THREE.HemisphereLight(0xffffff, 0xd8d0c8, 2.1));
+        const keyLight = new THREE.DirectionalLight(0xffffff, 3.2);
+        keyLight.position.set(4, 6, 7);
+        scene.add(keyLight);
+        const rimLight = new THREE.DirectionalLight(0xed1c24, 1.25);
+        rimLight.position.set(-5, 3, -4);
+        scene.add(rimLight);
+
+        let frameId = 0;
+        let carReady = false;
+        let introDone = false;
+        let worldWidth = 10;
+        let worldHeight = 6;
+
+        const resize = () => {
+          const width = window.innerWidth;
+          const height = window.innerHeight;
+          renderer.setSize(width, height, false);
+          worldHeight = width < 720 ? 7.2 : 6;
+          worldWidth = worldHeight * (width / height);
+          camera.left = -worldWidth / 2;
+          camera.right = worldWidth / 2;
+          camera.top = worldHeight / 2;
+          camera.bottom = -worldHeight / 2;
+          camera.updateProjectionMatrix();
+          group.position.y = width < 720 ? -0.55 : -0.4;
+          if (!carReady) group.position.x = -worldWidth * 0.68;
+        };
+
+        const render = () => {
+          renderer.render(scene, camera);
+          frameId = requestAnimationFrame(render);
+        };
+
+        const closeOverlay = () => {
+          if (introDone) return;
+          introDone = true;
+          gsap.to(overlay, {
+            opacity: 0,
+            duration: 0.4,
+            ease: "power2.out",
+            onComplete: () => {
+              cancelAnimationFrame(frameId);
+              renderer.dispose();
+              overlay.remove();
+              finishIntro();
+            }
+          });
+        };
+
+        const runFallback = () => {
+          gsap.set(group.position, { x: -worldWidth * 0.68 });
+          gsap.to(shadow, { opacity: 1, duration: 0.25 });
+          gsap.to(group.position, {
+            x: worldWidth * 0.68,
+            duration: 2,
+            ease: "power2.inOut",
+            onComplete: closeOverlay
+          });
+        };
+
+        resize();
+        window.addEventListener("resize", resize, { passive: true });
+        render();
+
+        const loader = new GLTFLoader();
+        loader.load(
+          "assets/intro-car/scene.gltf",
+          (gltf) => {
+            if (introDone) return;
+            const model = gltf.scene;
+            group.add(model);
+
+            const box = new THREE.Box3().setFromObject(model);
+            const size = box.getSize(new THREE.Vector3());
+            const center = box.getCenter(new THREE.Vector3());
+            model.position.sub(center);
+
+            const targetWidth = window.innerWidth < 720 ? worldWidth * 0.72 : worldWidth * 0.42;
+            const scale = targetWidth / Math.max(size.x, size.z, 0.001);
+            model.scale.setScalar(scale);
+            model.rotation.set(0.03, Math.PI / 2, 0);
+
+            carReady = true;
+            const carSpan = targetWidth * 0.75;
+            gsap.set(group.position, { x: -worldWidth / 2 - carSpan, y: group.position.y });
+            gsap.set(group.rotation, { y: 0 });
+            gsap.to(shadow, { opacity: 1, duration: 0.25 });
+            gsap.to(group.rotation, {
+              y: 0.05,
+              duration: 0.55,
+              yoyo: true,
+              repeat: 3,
+              ease: "sine.inOut"
+            });
+            gsap.to(group.position, {
+              x: worldWidth / 2 + carSpan,
+              duration: 2,
+              ease: "power2.inOut",
+              onComplete: closeOverlay
+            });
+          },
+          undefined,
+          () => {
+            carReady = true;
+            runFallback();
+          }
+        );
+      } else if (root.classList.contains("intro-active")) {
+        finishIntro();
       }
     </script>
   </body>
