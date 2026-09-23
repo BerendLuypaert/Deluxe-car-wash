@@ -10,8 +10,8 @@
     />
     <link
       rel="icon"
-      type="image/svg+xml"
-      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2306111f'/%3E%3Cpath d='M15 38h34l-4-13c-.8-2.5-2.8-4-5.4-4H24.4c-2.6 0-4.6 1.5-5.4 4l-4 13Z' fill='%23ffffff'/%3E%3Cpath d='M20 38h24v6H20z' fill='%2314b8a6'/%3E%3Ccircle cx='22' cy='45' r='4' fill='%2306111f'/%3E%3Ccircle cx='42' cy='45' r='4' fill='%2306111f'/%3E%3Cpath d='M18 18c5 2 9 2 14 0s9-2 14 0' stroke='%2314b8a6' stroke-width='4' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"
+      type="image/png"
+      href="assets/delux-logo.png"
     />
     <style>
       :root {
@@ -21,8 +21,8 @@
         --line: #dce4ec;
         --paper: #f7fafc;
         --white: #ffffff;
-        --teal: #11b7a5;
-        --teal-dark: #057c73;
+        --teal: #ed1c24;
+        --teal-dark: #b90f17;
         --yellow: #ffce4a;
         --navy: #06111f;
         --shadow: 0 24px 60px rgba(7, 17, 31, 0.16);
@@ -77,25 +77,14 @@
       .brand {
         display: flex;
         align-items: center;
-        gap: 12px;
+        width: clamp(170px, 19vw, 260px);
         font-weight: 900;
         letter-spacing: 0;
       }
 
-      .mark {
-        width: 42px;
-        height: 42px;
-        display: grid;
-        place-items: center;
-        border-radius: 8px;
-        background: var(--navy);
-        color: var(--white);
-        box-shadow: 0 10px 24px rgba(6, 17, 31, 0.22);
-      }
-
-      .mark svg {
-        width: 28px;
-        height: 28px;
+      .brand-logo {
+        width: 100%;
+        height: auto;
       }
 
       .navlinks {
@@ -148,12 +137,26 @@
         align-content: center;
       }
 
+      .hero-logo {
+        width: min(430px, 76vw);
+        padding: 14px 18px;
+        margin-bottom: 24px;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.94);
+        box-shadow: 0 22px 56px rgba(0, 0, 0, 0.24);
+      }
+
+      .hero-logo img {
+        width: 100%;
+        height: auto;
+      }
+
       .eyebrow {
         width: fit-content;
         padding: 8px 12px;
         border: 1px solid rgba(255, 255, 255, 0.22);
         border-radius: 8px;
-        color: #d7fffa;
+        color: #ffe1e3;
         background: rgba(255, 255, 255, 0.08);
         font-weight: 800;
         font-size: 0.88rem;
@@ -187,8 +190,8 @@
       }
 
       .button.primary {
-        background: var(--yellow);
-        color: var(--ink);
+        background: var(--teal);
+        color: var(--white);
       }
 
       .button.secondary {
@@ -514,9 +517,8 @@
           min-height: 64px;
         }
 
-        .brand span {
-          max-width: 150px;
-          line-height: 1.05;
+        .brand {
+          width: 150px;
         }
 
         .phone-pill {
@@ -536,6 +538,11 @@
 
         .hero-inner {
           padding-top: 52px;
+        }
+
+        .hero-logo {
+          padding: 10px 12px;
+          margin-bottom: 18px;
         }
 
         .hero-actions,
@@ -570,14 +577,7 @@
     <header class="topbar">
       <nav class="nav" aria-label="Hoofdnavigatie">
         <a class="brand" href="#top" aria-label="Delux Hand Car Wash home">
-          <span class="mark" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none">
-              <path d="M5 14h14l-1.6-5.1A3 3 0 0 0 14.5 7h-5A3 3 0 0 0 6.6 8.9L5 14Z" stroke="currentColor" stroke-width="1.8" />
-              <path d="M7 14v3m10-3v3M8 17h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
-              <path d="M7 4c3 1.4 7 1.4 10 0" stroke="#11b7a5" stroke-width="1.8" stroke-linecap="round" />
-            </svg>
-          </span>
-          <span>Delux Hand Car Wash</span>
+          <img class="brand-logo" src="assets/delux-logo.png" alt="Delux Hand Car Wash" />
         </a>
         <div class="navlinks" aria-label="Pagina onderdelen">
           <a href="#diensten">Diensten</a>
@@ -596,6 +596,9 @@
     <main id="top">
       <section class="hero" aria-label="Introductie">
         <div class="hero-inner">
+          <div class="hero-logo" aria-hidden="true">
+            <img src="assets/delux-logo.png" alt="" />
+          </div>
           <div class="eyebrow">Handcarwash in Sint-Truiden</div>
           <h1>Uw wagen weer proper, binnen en buiten.</h1>
           <p class="hero-copy">
