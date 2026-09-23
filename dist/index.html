@@ -407,6 +407,41 @@
         gap: 14px;
       }
 
+      .price-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+        margin-top: 26px;
+      }
+
+      .price-card {
+        padding: 18px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--white);
+        box-shadow: 0 12px 32px rgba(7, 17, 31, 0.06);
+      }
+
+      .price-card strong {
+        display: block;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+      }
+
+      .price-card .price {
+        display: block;
+        margin: 8px 0 6px;
+        color: var(--teal);
+        font-size: 2rem;
+        font-weight: 1000;
+        line-height: 1;
+      }
+
+      .price-card span:last-child {
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
       .service {
         padding: 24px;
         border: 1px solid var(--line);
@@ -563,6 +598,7 @@
 
         .hero-strip,
         .feature-grid,
+        .price-grid,
         .services,
         .hours-contact,
         .draft-grid,
@@ -753,8 +789,25 @@
             <span class="kicker">Diensten</span>
             <h2 id="diensten-title">Wat hier normaal komt te staan.</h2>
             <p class="lead">
-              Zonder definitieve prijslijst tonen we de diensten als voorlopige mogelijkheden. De exacte pakketten, prijzen en combinaties worden best bevestigd voor publicatie.
+              Kies later uit duidelijke wasformules voor binnen, buiten of een complete reiniging.
             </p>
+            <div class="price-grid" aria-label="Voorbeeldprijzen">
+              <div class="price-card">
+                <strong>Basic wash</strong>
+                <span class="price">€15</span>
+                <span>Exterieur handwas</span>
+              </div>
+              <div class="price-card">
+                <strong>Inside & outside</strong>
+                <span class="price">€30</span>
+                <span>Buitenwas + interieur</span>
+              </div>
+              <div class="price-card">
+                <strong>Delux clean</strong>
+                <span class="price">€45</span>
+                <span>Grondige reiniging</span>
+              </div>
+            </div>
             <div class="services" style="margin-top: 28px">
               <article class="service">
                 <svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="M4 13h16M7 9h10M6 17h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
@@ -778,7 +831,7 @@
               </article>
             </div>
             <div class="note">
-              <p><strong>Prijzen en pakketten:</strong> hier kunnen later waspakketten komen zoals basiswas, binnen en buiten, premium reiniging of detailbehandeling. Nu staat er bewust nog geen prijs.</p>
+              <p><strong>Voorbeeldprijzen:</strong> deze bedragen zijn indicatief en moeten nog bevestigd worden door Delux Hand Car Wash voor publicatie.</p>
             </div>
           </div>
         </div>
